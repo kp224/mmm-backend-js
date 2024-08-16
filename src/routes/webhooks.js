@@ -1,9 +1,12 @@
 import express from 'express';
 import { Webhook } from 'svix';
 import bodyParser from 'body-parser';
+import { db } from '../db/db.js';
+import { users } from '../db/schema.js';
 
 const router = express.Router();
 
+// Use raw body parsing for the webhook route
 router.post(
   '/',
   bodyParser.raw({ type: 'application/json' }),
@@ -41,13 +44,24 @@ router.post(
       return res.status(400).json({ success: false, message: err.message });
     }
 
-    const { id } = evt.data;
+    const { id, first_name, last_name, email_addresses } = evt.data;
+    const email = email_addresses[0].email_address;
+    console.log(id, first_name, last_name, email);
     const eventType = evt.type;
-    console.log(`Webhook with an ID of ${id} and type of ${eventType}`);
-    console.log('Webhook body:', evt.data);
+    // console.log(`Webhook with an ID of ${id} and type of ${eventType}`);
+    // console.log('Webhook body:', evt.data);
 
     if (evt.type === 'user.created') {
       console.log('userId:', evt.data.id);
+      await db
+        .insert(users)
+        .values({
+          id: id,
+          first_name: first_name,
+          last_name: last_name,
+          email: email
+        })
+        .returning();
     }
 
     return res.status(200).json({

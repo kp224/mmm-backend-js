@@ -8,6 +8,16 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express();
 
+// Use JSON parsing for all routes except webhooks
+app.use((req, res, next) => {
+  if (req.path === '/api/webhooks') {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
+
+// Use the /api router
 app.use('/api', apiRouter);
 
 const port = process.env.PORT || 3333;

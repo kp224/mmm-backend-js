@@ -1,10 +1,8 @@
 import express from 'express';
+import { getUserData } from '../handlers/user.js';
 
 const router = express.Router();
 
-// Example route for /api/user
-router.get('/', (req, res) => {
-  res.send('User endpoint');
-});
+router.get('/:id', getUserData);
 
 export default router;

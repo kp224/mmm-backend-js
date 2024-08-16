@@ -1,10 +1,8 @@
 import express from 'express';
+import { getUserByRole } from '../handlers/role.js';
 
 const router = express.Router();
 
-// Example route for /api/role
-router.get('/', (req, res) => {
-  res.send('Role endpoint');
-});
+router.get('/:role', getUserByRole);
 
 export default router;

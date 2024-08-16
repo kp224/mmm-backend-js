@@ -1,10 +1,9 @@
 import express from 'express';
+import { submitForm, checkForm } from '../handlers/form.js';
 
 const router = express.Router();
 
-// Example route for /api/form
-router.get('/', (req, res) => {
-  res.send('Form endpoint');
-});
+router.post('/submit/:id', submitForm);
+router.get('/check/:id', checkForm);
 
 export default router;
