@@ -21,7 +21,7 @@ export async function submitOnboarding(req, res) {
 
     console.log(userId, role);
 
-    const updateUser = await db
+    const updateResult = await db
       .update(users)
       .set({ role: role })
       .where(eq(users.id, userId))
@@ -31,13 +31,22 @@ export async function submitOnboarding(req, res) {
         lastName: users.last_name
       });
 
-    console.log(updateUser);
+    console.log('Update result:', updateResult);
 
-    if (connectionId && updateUser[0]?.id) {
+    let updateUser;
+    if (updateResult && updateResult.length > 0) {
+      updateUser = updateResult[0];
+      console.log('Updated user:', updateUser);
+    } else {
+      console.log('No user was updated');
+    }
+
+    console.log(updateUser.id, updateUser.firstName, updateUser.lastName);
+
+    if (connectionId && updateUser.id) {
       if (role === 'patient') {
         console.log('onboarding patient');
-        const user_name =
-          updateUser[0]?.firstName + ' ' + updateUser[0]?.lastName;
+        const user_name = updateUser.firstName + ' ' + updateUser.lastName;
 
         await db.insert(patient_profiles).values({
           name: user_name,
@@ -49,7 +58,7 @@ export async function submitOnboarding(req, res) {
 
         const caregiverProfile = await db
           .update(patient_profiles)
-          .set({ caregiver_id: updateUser[0]?.id })
+          .set({ caregiver_id: updateUser.id })
           .where(eq(patient_profiles.patient_id, connectionId));
 
         console.log(caregiverProfile);
