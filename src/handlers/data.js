@@ -46,11 +46,7 @@ export async function getData(req, res) {
       });
 
       return;
-    } else {
-      res.status(200).json({ findUser });
-    }
-
-    if (role === 'caregiver') {
+    } else if (role === 'caregiver') {
       const patient_profile = await db
         .select({
           patient_id: patient_profiles.patient_id,
@@ -79,6 +75,8 @@ export async function getData(req, res) {
         patient: patientData ? patientData[0] : null,
         physician: physicianData ? physicianData[0] : null
       });
+
+      return; // Add this return to prevent further execution
     } else {
       res.status(200).json({ findUser });
     }

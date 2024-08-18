@@ -64,6 +64,15 @@ router.post(
         .returning();
     }
 
+    if (evt.type === 'user.updated') {
+      console.log('userId:', evt.data.id);
+      await db.update(users).set({
+        first_name: first_name,
+        last_name: last_name,
+        email: email
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Webhook received'
