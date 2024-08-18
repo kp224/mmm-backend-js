@@ -37,7 +37,6 @@ export async function submitForm(req, res) {
     } else {
       console.log(req.body);
       console.log('role', req.body.role);
-      // const form = await db.insert(health_data).values(req.body).returning();
       let patient_profile_id;
 
       if (req.body.role === 'patient') {

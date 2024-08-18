@@ -35,6 +35,7 @@ export const patient_profiles = createTable('patient_profiles', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   name: varchar('name', { length: 256 }).notNull(),
   patient_id: varchar('patient_id')
+    .unique()
     .notNull()
     .references(() => users.id),
   caregiver_id: varchar('caregiver_id').references(() => users.id),
