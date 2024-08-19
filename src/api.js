@@ -5,6 +5,7 @@ import userRouter from './routes/user.js';
 import formRouter from './routes/form.js';
 import onboardingRouter from './routes/onboarding.js';
 import dataRouter from './routes/data.js';
+import physicianRouter from './routes/physician.js';
 
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.use('/user', userRouter);
 router.use('/form', formRouter);
 router.use('/data', dataRouter);
 router.use('/onboarding', onboardingRouter);
+router.use('/physician', physicianRouter);
 
 export default router;

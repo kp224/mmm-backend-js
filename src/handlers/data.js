@@ -85,7 +85,7 @@ export async function getData(req, res) {
   }
 }
 
-async function getUserDetails(userId) {
+export async function getUserDetails(userId) {
   const user = await db
     .select({
       first_name: users.first_name,
