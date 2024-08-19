@@ -21,6 +21,7 @@ export async function submitOnboarding(req, res) {
 
     console.log('Clerk user updated:', userId, role);
 
+    // Update the user's role in the database
     const updateResult = await db
       .update(users)
       .set({ role: role })
@@ -38,14 +39,15 @@ export async function submitOnboarding(req, res) {
     const updateUser = updateResult[0];
     console.log('Updated user:', updateUser);
 
-    // Check if updateUser is defined before trying to access its properties
+    // Ensure updateUser is valid
     if (!updateUser || !updateUser.id) {
       return res
         .status(500)
         .json({ message: 'Failed to retrieve updated user information' });
     }
 
-    if (connectionId && role === 'patient') {
+    // Role-specific logic
+    if (role === 'patient' && connectionId) {
       console.log('Onboarding patient');
 
       const user_name = `${updateUser.firstName} ${updateUser.lastName}`;
@@ -57,7 +59,7 @@ export async function submitOnboarding(req, res) {
       });
 
       console.log('Patient profile created');
-    } else if (connectionId && role === 'caregiver') {
+    } else if (role === 'caregiver' && connectionId) {
       console.log('Onboarding caregiver');
 
       const caregiverProfile = await db
@@ -67,10 +69,10 @@ export async function submitOnboarding(req, res) {
         .returning('*');
 
       console.log('Caregiver profile updated:', caregiverProfile);
-    } else {
-      if (role !== 'physician') {
-        return res.status(400).json({ message: 'Invalid role' });
-      }
+    } else if (role !== 'physician') {
+      return res
+        .status(400)
+        .json({ message: 'Invalid role or missing connectionId' });
     }
 
     res.status(200).json({ message: 'Successfully submitted onboarding' });
