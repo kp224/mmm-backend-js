@@ -48,6 +48,7 @@ router.post(
     const email = email_addresses[0].email_address;
     console.log(id, first_name, last_name, email);
     const eventType = evt.type;
+    console.log('eventType:', eventType);
 
     if (evt.type === 'user.created') {
       console.log('userId:', evt.data.id);

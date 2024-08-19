@@ -7,8 +7,8 @@ export async function submitOnboarding(req, res) {
   try {
     const { userId, role, connectionId } = req.body;
 
-    if (!(userId && role)) {
-      throw new Error('Invalid request body');
+    if (!userId || !role) {
+      return res.status(400).json({ message: 'Invalid request body' });
     }
 
     // Save the user's role to Clerk
@@ -19,7 +19,7 @@ export async function submitOnboarding(req, res) {
       }
     });
 
-    console.log(userId, role);
+    console.log('Clerk user updated:', userId, role);
 
     const updateResult = await db
       .update(users)
@@ -31,45 +31,51 @@ export async function submitOnboarding(req, res) {
         lastName: users.last_name
       });
 
-    console.log('Update result:', updateResult);
-
-    let updateUser;
-    if (updateResult && updateResult.length > 0) {
-      updateUser = updateResult[0];
-      console.log('Updated user:', updateUser);
-    } else {
-      console.log('No user was updated');
+    if (!updateResult || updateResult.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    console.log(updateUser.id, updateUser.firstName, updateUser.lastName);
+    const updateUser = updateResult[0];
+    console.log('Updated user:', updateUser);
 
-    if (connectionId && updateUser.id) {
-      if (role === 'patient') {
-        console.log('onboarding patient');
-        const user_name = updateUser.firstName + ' ' + updateUser.lastName;
+    // Check if updateUser is defined before trying to access its properties
+    if (!updateUser || !updateUser.id) {
+      return res
+        .status(500)
+        .json({ message: 'Failed to retrieve updated user information' });
+    }
 
-        await db.insert(patient_profiles).values({
-          name: user_name,
-          patient_id: userId,
-          physician_id: connectionId
-        });
-      } else if (role === 'caregiver') {
-        console.log('onboarding caregiver');
+    if (connectionId && role === 'patient') {
+      console.log('Onboarding patient');
 
-        const caregiverProfile = await db
-          .update(patient_profiles)
-          .set({ caregiver_id: updateUser.id })
-          .where(eq(patient_profiles.patient_id, connectionId));
+      const user_name = `${updateUser.firstName} ${updateUser.lastName}`;
 
-        console.log(caregiverProfile);
-      } else {
-        console.error('Invalid role');
+      await db.insert(patient_profiles).values({
+        name: user_name,
+        patient_id: userId,
+        physician_id: connectionId
+      });
+
+      console.log('Patient profile created');
+    } else if (connectionId && role === 'caregiver') {
+      console.log('Onboarding caregiver');
+
+      const caregiverProfile = await db
+        .update(patient_profiles)
+        .set({ caregiver_id: updateUser.id })
+        .where(eq(patient_profiles.patient_id, connectionId))
+        .returning('*');
+
+      console.log('Caregiver profile updated:', caregiverProfile);
+    } else {
+      if (role !== 'physician') {
+        return res.status(400).json({ message: 'Invalid role' });
       }
     }
 
     res.status(200).json({ message: 'Successfully submitted onboarding' });
   } catch (error) {
-    console.error(error);
+    console.error('Error submitting onboarding:', error);
     res.status(500).json({ message: 'Failed to submit onboarding' });
   }
 }
