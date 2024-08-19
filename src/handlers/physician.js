@@ -1,5 +1,5 @@
 import { db } from '../db/db.js';
-import { patient_profiles } from '../db/schema.js';
+import { health_data } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 import { getUserDetails } from './data.js';
 
@@ -55,5 +55,20 @@ export async function getPatientProfiles(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to get patient profiles' });
+  }
+}
+
+export async function getHealthData(req, res) {
+  const userId = req.params.id;
+
+  const result = await db
+    .select()
+    .from(health_data)
+    .where(eq(health_data.submitter_id, userId));
+
+  if (result.length === 0) {
+    res.status(200).json([]);
+  } else if (result.length > 0) {
+    res.status(200).json(result);
   }
 }

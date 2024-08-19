@@ -1,8 +1,9 @@
 import express from 'express';
-import { getPatientProfiles } from '../handlers/physician.js';
+import { getHealthData, getPatientProfiles } from '../handlers/physician.js';
 
 const router = express.Router();
 
 router.get('/getPatientProfiles/:id', getPatientProfiles);
+router.get('/getHealthData/:id', getHealthData);
 
 export default router;
