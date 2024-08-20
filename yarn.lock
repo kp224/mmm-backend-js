@@ -2,42 +2,42 @@
 # yarn lockfile v1
 
 
-"@clerk/backend@1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-1.6.3.tgz#d9891ada0d937e1bf97e0c7c82f0f9885775556e"
-  integrity sha512-rZHrbVpmHF9T61EVM2mksocLVQ9/7oWY/Q+Fq0lZGtIVfBPJa1QMYGosPooOw9MeMvpBK21BujjBg4OxrT9ToQ==
+"@clerk/backend@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-1.7.0.tgz#fc9e435bb0bfbf14f98ff65214cfdf8b5ae0726b"
+  integrity sha512-ynU1XBdlezegTlwNtRxf8AjOQtTeBQligNKZtHOWZEfTM9CzJs8XEwAOpKYQ6/LRt0hlch8YeP5qHjD5W8sYvw==
   dependencies:
-    "@clerk/shared" "2.5.1"
-    "@clerk/types" "4.13.1"
+    "@clerk/shared" "2.5.2"
+    "@clerk/types" "4.14.0"
     cookie "0.5.0"
     snakecase-keys "5.4.4"
     tslib "2.4.1"
 
-"@clerk/clerk-sdk-node@^5.0.27":
-  version "5.0.27"
-  resolved "https://registry.yarnpkg.com/@clerk/clerk-sdk-node/-/clerk-sdk-node-5.0.27.tgz#858d6db4692d07d8acc6f4e27773e647f7c51095"
-  integrity sha512-nTztsbRq4nhSqryYb2YgFarT54t+ZRI+uoiiXcypI90e1J2WAWnPrnE66h+B45riAr1aQ62isXDQOJCmKdm0kg==
+"@clerk/clerk-sdk-node@^5.0.28":
+  version "5.0.28"
+  resolved "https://registry.yarnpkg.com/@clerk/clerk-sdk-node/-/clerk-sdk-node-5.0.28.tgz#9758d84291c137fa35b6f03dcfc54819b51fee9b"
+  integrity sha512-fXygLYLYu37tlq2sUFnPG4eJONoOOLJGzhKtyMVjj2og4NXcGqJ7YzMrWzp7sK6NAgjYldm2RQj5Vta4H05hpQ==
   dependencies:
-    "@clerk/backend" "1.6.3"
-    "@clerk/shared" "2.5.1"
-    "@clerk/types" "4.13.1"
+    "@clerk/backend" "1.7.0"
+    "@clerk/shared" "2.5.2"
+    "@clerk/types" "4.14.0"
     tslib "2.4.1"
 
-"@clerk/shared@2.5.1":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-2.5.1.tgz#855406a25455572254046d3aca66231418f62cee"
-  integrity sha512-RslzZvjolG8ToZlegV8XPEkINQ4XM23lO2xS6ZtJEeGzRzchkpEBUOYywjG6aGtJDByWBY2OxyrPaa5rwx1XEg==
+"@clerk/shared@2.5.2":
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-2.5.2.tgz#03aba401cdd4ce91eede0978bba7f3ffd771f16c"
+  integrity sha512-3+I5vMhkn3wSqCuoxIIXRma3m8zpLJBH11MO2uxKOAeZJRyeALY0jGPeyptskl+Fl9j9Rtan0OWJIisMN8TiAA==
   dependencies:
-    "@clerk/types" "4.13.1"
+    "@clerk/types" "4.14.0"
     glob-to-regexp "0.4.1"
     js-cookie "3.0.5"
     std-env "^3.7.0"
     swr "^2.2.0"
 
-"@clerk/types@4.13.1":
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/@clerk/types/-/types-4.13.1.tgz#d3368651dc6cf3f6c84f31d83dbdb7560f57589b"
-  integrity sha512-AfFTA1Du0pog62CSl23Y8NNDN+iHwXdUQAp/sQ/LbE+/wYBOMSaV5d+cS5F4HX+/uzXgKsc3BpCNI/Th3CLNHg==
+"@clerk/types@4.14.0":
+  version "4.14.0"
+  resolved "https://registry.yarnpkg.com/@clerk/types/-/types-4.14.0.tgz#2215d3a8337f984a401c5a819b793de622d223a5"
+  integrity sha512-d3MUcWtXGTOS7QYCRVrOra7NYAGRiNWlb+Ke2KMSb+Z3lea6WlKeHa18uVnAkIVxBXtHlzdU2kwW0PrHkx8j9Q==
   dependencies:
     csstype "3.1.1"
 
