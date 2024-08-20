@@ -1,11 +1,11 @@
 import { db } from '../db/db.js';
-import { health_data } from '../db/schema.js';
+import { patient_profiles } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 import { getUserDetails } from './data.js';
 
 export async function getPatientProfiles(req, res) {
   let allPatientCaregiverProfileData = [];
-  console.log(req.params.id);
+  console.log('Physician ID:', req.params.id);
   try {
     const patientProfiles = await db
       .select({
@@ -18,15 +18,10 @@ export async function getPatientProfiles(req, res) {
       .from(patient_profiles)
       .where(eq(patient_profiles.physician_id, req.params.id));
 
-    console.log(patientProfiles);
-
-    // loop through patientProfiles and use the patient_id to get the patient's name and email
-    // loop through the patientProfiles and use the caregiver_id to get the caregiver's name and email if it exists
+    console.log('patientProfiles', patientProfiles);
 
     if (patientProfiles.length > 0) {
-      for (let index in patientProfiles) {
-        let patientProfile = patientProfiles[index];
-
+      for (let patientProfile of patientProfiles) {
         if (patientProfile) {
           let patientData = await getUserDetails(patientProfile.patient_id);
           let caregiverData = null;
@@ -37,38 +32,40 @@ export async function getPatientProfiles(req, res) {
 
           allPatientCaregiverProfileData.push({
             patientProfile,
-            patientData,
-            caregiverData
+            patientData: patientData[0],
+            caregiverData: caregiverData ? caregiverData[0] : null
           });
         }
       }
       return res.status(200).json(allPatientCaregiverProfileData);
-    } else if (patientProfiles.length === 0) {
-      res.status(200).json(patientProfiles);
     } else {
-      res.status(500).json({
-        message: 'An error occurred while retrieving patient profiles'
-      });
+      return res.status(200).json([]);
     }
-
-    // res.status(200).json(patientProfiles);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Failed to get patient profiles' });
+    console.error('Error in getPatientProfiles:', error);
+    return res
+      .status(500)
+      .json({
+        message: 'Failed to get patient profiles',
+        error: error.message
+      });
   }
 }
 
 export async function getHealthData(req, res) {
   const userId = req.params.id;
 
-  const result = await db
-    .select()
-    .from(health_data)
-    .where(eq(health_data.submitter_id, userId));
+  try {
+    const result = await db
+      .select()
+      .from(health_data)
+      .where(eq(health_data.submitter_id, userId));
 
-  if (result.length === 0) {
-    res.status(200).json([]);
-  } else if (result.length > 0) {
     res.status(200).json(result);
+  } catch (error) {
+    console.error('Error in getHealthData:', error);
+    res
+      .status(500)
+      .json({ message: 'Failed to get health data', error: error.message });
   }
 }
