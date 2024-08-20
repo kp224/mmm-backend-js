@@ -26,49 +26,52 @@ export async function submitOnboarding(req, res) {
       .update(users)
       .set({ role: role })
       .where(eq(users.id, userId))
-      .returning({
+      .execute();
+
+    // Fetch the updated user separately
+    const updatedUser = await db
+      .select({
         id: users.id,
         firstName: users.first_name,
         lastName: users.last_name
-      });
+      })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1)
+      .then((results) => results[0]);
 
-    if (!updateResult || updateResult.length === 0) {
+    if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const updateUser = updateResult[0];
-    console.log('Updated user:', updateUser);
-
-    // Ensure updateUser is valid
-    if (!updateUser || !updateUser.id) {
-      return res
-        .status(500)
-        .json({ message: 'Failed to retrieve updated user information' });
-    }
+    console.log('Updated user:', updatedUser);
 
     // Role-specific logic
     if (role === 'patient' && connectionId) {
       console.log('Onboarding patient');
 
-      const user_name = `${updateUser.firstName} ${updateUser.lastName}`;
+      const user_name = `${updatedUser.firstName} ${updatedUser.lastName}`;
 
-      await db.insert(patient_profiles).values({
-        name: user_name,
-        patient_id: userId,
-        physician_id: connectionId
-      });
+      await db
+        .insert(patient_profiles)
+        .values({
+          name: user_name,
+          patient_id: userId,
+          physician_id: connectionId
+        })
+        .execute();
 
       console.log('Patient profile created');
     } else if (role === 'caregiver' && connectionId) {
       console.log('Onboarding caregiver');
 
-      const caregiverProfile = await db
+      await db
         .update(patient_profiles)
-        .set({ caregiver_id: updateUser.id })
+        .set({ caregiver_id: updatedUser.id })
         .where(eq(patient_profiles.patient_id, connectionId))
-        .returning('*');
+        .execute();
 
-      console.log('Caregiver profile updated:', caregiverProfile);
+      console.log('Caregiver profile updated');
     } else if (role !== 'physician') {
       return res
         .status(400)
