@@ -1,5 +1,5 @@
 import { db } from '../db/db.js';
-import { patient_profiles } from '../db/schema.js';
+import { patient_profiles, health_data } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 import { getUserDetails } from './data.js';
 
@@ -43,12 +43,10 @@ export async function getPatientProfiles(req, res) {
     }
   } catch (error) {
     console.error('Error in getPatientProfiles:', error);
-    return res
-      .status(500)
-      .json({
-        message: 'Failed to get patient profiles',
-        error: error.message
-      });
+    return res.status(500).json({
+      message: 'Failed to get patient profiles',
+      error: error.message
+    });
   }
 }
 
